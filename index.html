@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You 💖</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#fff1f5,#ffe4ec);
+    overflow:hidden;
+}
+
+/* FLOATING HEARTS BACKGROUND */
+.hearts{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+}
+.heart{
+    position:absolute;
+    width:14px;
+    height:14px;
+    background:rgba(255,105,180,0.35);
+    transform:rotate(45deg);
+    animation:float 12s linear infinite;
+}
+.heart::before,
+.heart::after{
+    content:"";
+    position:absolute;
+    width:14px;
+    height:14px;
+    background:rgba(255,105,180,0.35);
+    border-radius:50%;
+}
+.heart::before{top:-7px}
+.heart::after{left:-7px}
+
+@keyframes float{
+    from{transform:translateY(100vh) rotate(45deg);opacity:0}
+    20%{opacity:1}
+    to{transform:translateY(-120vh) rotate(45deg);opacity:0}
+}
+
+/* MAIN CARD */
+.container{
+    width:90vw;
+    max-width:420px;
+    height:85vh;
+    max-height:720px;
+    background:#ffffffcc;
+    border-radius:25px;
+    padding:25px 15px;
+    box-shadow:0 10px 30px rgba(255,182,193,0.5);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    z-index:2;
+}
+
+.screen{display:none;width:100%}
+.screen.active{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.cat{width:170px;margin-bottom:15px}
+.gift,.crystal{
+    width:150px;
+    cursor:pointer;
+    transition:.3s;
+}
+.gift:hover,.crystal:hover{transform:scale(1.1)}
+.memory{width:230px;border-radius:12px}
+
+button{
+    background:white;
+    border:2px solid #ff9dbb;
+    color:#ff5f9e;
+    border-radius:25px;
+    padding:10px 25px;
+    margin-top:15px;
+    font-size:15px;
+    cursor:pointer;
+}
+button:hover{background:#ffe6ee}
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+.photo-card{
+    background:#fff0f5;
+    border-radius:15px;
+    padding:8px;
+}
+.photo-card img{
+    width:100%;
+    border-radius:10px;
+}
+.photo-card p{
+    font-size:13px;
+    color:#ff4f8b;
+}
+
+.letter{
+    background:#fff0f7;
+    padding:22px;
+    border-radius:20px;
+    font-size:16px;
+    color:#ff4f8b;
+}
+
+/* FIREWORKS */
+#fireworks{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    display:none;
+    z-index:1;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEART BACKGROUND -->
+<div class="hearts"></div>
+
+<canvas id="fireworks"></canvas>
+
+<div class="container">
+
+<!-- SCREEN 1 -->
+<div class="screen active" id="s1">
+    <img src="images/cat1.png" class="cat">
+    <p>hey! i made something for you 💖<br>will you see it?</p>
+    <button onclick="yesClick()">yes</button>
+    <button onclick="noClick()">no</button>
+</div>
+
+<!-- HOW DARE YOU SCREEN -->
+<div class="screen" id="howDare">
+    <img src="images/cat-angry.png" class="cat">
+    <h2>HOW DARE YOU 😤</h2>
+    <p> 😾</p>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen" id="s2">
+    <img src="images/cat-angry.png" class="cat">
+    <p>okay okay 😼<br>just tap below</p>
+    <button onclick="go('s3')">continue</button>
+</div>
+
+<!-- SCREEN 3 (CRYSTAL) -->
+<div class="screen" id="s3">
+    <p>Touch the crystal 🔮</p>
+    <img src="images/crystal.png" class="crystal" onclick="go('s4')">
+</div>
+
+<!-- SCREEN 4 -->
+<div class="screen" id="s4">
+    <h3>these reminded me of you 🐱💖</h3>
+    <div class="gallery">
+        <div class="photo-card">
+            <img src="images/cat-gun.png">
+            <p>cute but dangerous 😼</p>
+        </div>
+        <div class="photo-card">
+            <img src="images/cat-book.png">
+            <p>smart kitty 📘</p>
+        </div>
+        <div class="photo-card">
+            <img src="images/cat-flower.png">
+            <p>for you 🌸</p>
+        </div>
+        <div class="photo-card">
+            <img src="images/cat-shy2.png">
+            <p>soft & adorable 🥺</p>
+        </div>
+    </div>
+    <button onclick="go('s5')">next 💫</button>
+</div>
+
+<!-- SCREEN 5 -->
+<div class="screen" id="s5">
+    <img src="images/cat-gift.png" class="gift" onclick="go('s6')">
+    <p><b>Happy New Year 💫</b><br>tap the gift 🎁</p>
+</div>
+
+<!-- SCREEN 6 -->
+<div class="screen" id="s6">
+    <img src="images/memories.png" class="memory">
+    <p>
+        for 2026 i wish you:<br><br>
+        ✨ peace<br>
+        😂 laughter<br>
+        😴 good sleep<br>
+        🌸 happiness
+    </p>
+    <button onclick="final()">one last thing 💌</button>
+</div>
+
+<!-- FINAL SCREEN -->
+<div class="screen" id="s7">
+    <div class="letter">
+        <h2>🎆 Happy New Year 🎆</h2>
+        <p>
+            thank you for being part of my life 💖<br><br>
+            may this year bring you<br>
+            love, success & smiles ✨<br><br>
+            — from me 🌷
+        </p>
+    </div>
+</div>
+
+</div>
+
+<script>
+/* SCREEN CONTROL */
+function go(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+function yesClick(){go('s2')}
+function noClick(){
+    go('howDare');
+    setTimeout(()=>go('s1'),2000);
+}
+function final(){
+    go('s7');
+    startFireworks();
+}
+
+/* HEART GENERATOR */
+const heartBox=document.querySelector(".hearts");
+for(let i=0;i<30;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDelay=Math.random()*10+"s";
+    h.style.animationDuration=8+Math.random()*6+"s";
+    h.style.transform=`scale(${0.6+Math.random()}) rotate(45deg)`;
+    heartBox.appendChild(h);
+}
+
+/* FIREWORKS */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+let parts=[];
+function resize(){
+    canvas.width=innerWidth;
+    canvas.height=innerHeight;
+}
+resize();window.onresize=resize;
+
+function boom(){
+    let x=Math.random()*canvas.width;
+    let y=Math.random()*canvas.height/2;
+    let colors=["#ff5f9e","#ffd1dc","#ff8fab"];
+    for(let i=0;i<40;i++){
+        parts.push({
+            x,y,
+            vx:(Math.random()-0.5)*6,
+            vy:(Math.random()-0.5)*6,
+            life:60,
+            c:colors[Math.floor(Math.random()*colors.length)]
+        });
+    }
+}
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach((p,i)=>{
+        p.x+=p.vx; p.y+=p.vy; p.life--;
+        ctx.fillStyle=p.c;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,2.5,0,Math.PI*2);
+        ctx.fill();
+        if(p.life<=0) parts.splice(i,1);
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
+function startFireworks(){
+    canvas.style.display="block";
+    setInterval(boom,900);
+}
+</script>
+
+</body>
+</html>
+
